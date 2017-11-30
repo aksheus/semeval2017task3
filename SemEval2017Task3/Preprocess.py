@@ -32,4 +32,9 @@ class PreProcess:
            From relevancy file build this table
            key : 'Q268_R4_C1' : true/false
         """
-        pass
+        truth_table  = {}
+        with open(path,errors='ignore') as inp:
+            for line in inp:
+                pieces = line.rstrip().split()
+                truth_table[pieces[1]]=pieces[-1]
+        return truth_table
