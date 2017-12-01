@@ -35,27 +35,32 @@ class BuildRep:
             out.write('\n')
             for question in question_comments.keys():
                 question_embedding  = self.GetSentenceEmbedding(question)
+                if question_embedding.__class__ != np.ndarray:
+                    continue
                 for id,comment in question_comments[question]:
                     comment_embedding = self.GetSentenceEmbedding(comment)
+                    if comment_embedding.__class__ != np.ndarray:
+                        continue
                     qc_embedding = np.concatenate((question_embedding,comment_embedding))
                     out.write(','.join(str(v) for v in qc_embedding)+','+truth_table[id])
                     out.write('\n')
         return
 
     def GetSentenceEmbedding(self,text):
-        print('input text',text)
         words = word_tokenize(text)
-        print('words',words)
         word_vectors = []
         for word in words:
             try:
                 word_vectors.append(self.embedding_model.word_vec(word,use_norm=False))
             except KeyError:
                 pass
-        print('word vectors',word_vectors)
-        sentence_matrix = np.stack(word_vectors)
-        print('sentence matrix',sentence_matrix)
-        return np.mean(sentence_matrix,axis=0)
+        if word_vectors!=[]:
+            sentence_matrix = np.stack(word_vectors)
+            return np.mean(sentence_matrix,axis=0)
+        else:
+            # 15 missed training instances cuz of oov :/
+            print('missed instance')
+            return False
 
     def BuildTestRep(self,question_comments,out_path='.'):
         """
