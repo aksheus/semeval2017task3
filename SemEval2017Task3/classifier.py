@@ -28,6 +28,7 @@ if __name__ == '__main__':
 	if args['mode'] == 'rep':
 		preprocessor = PreProcess()
 		question_comments = preprocessor.GetQuestionCommentDict(args['train'])
+		question_comments_test = preprocessor.GetQuestionCommentDict(args['test'])
 		#for k in question_comments.keys():
 		#	print(k,' : ',question_comments[k])
 		#print(len(question_comments))
@@ -37,6 +38,7 @@ if __name__ == '__main__':
 		print(len(truth_table))"""
 		builder = BuildRep()
 		builder.BuildTrainRep(question_comments,truth_table)
+		builder.BuildTestRep(question_comments_test)
 
 	elif args['mode'] == 'classify':
 		pass

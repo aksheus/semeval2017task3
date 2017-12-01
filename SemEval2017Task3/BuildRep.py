@@ -18,7 +18,7 @@ class BuildRep:
         # initialize google w2v
         # need to change later: dimensions and pre trained embeddings should be passed to constructor 
         self.embedding_model = gensim.models.KeyedVectors.load_word2vec_format('C:\\Users\\abkma\\anlp\\GoogleNews-vectors-negative300.bin', binary=True)
-        self.features = [ 'dimension'+str(z+1) for z in range(300) ]
+        self.features = [ 'dimension'+str(z+1) for z in range(600) ]
         self.features.append('categories')
         return
 
@@ -59,7 +59,9 @@ class BuildRep:
             return np.mean(sentence_matrix,axis=0)
         else:
             # 15 missed training instances cuz of oov :/
+            # 25 test instances must output an instance as prediction is must
             print('missed instance')
+            print(text)
             return False
 
     def BuildTestRep(self,question_comments,out_path='.'):
@@ -68,7 +70,22 @@ class BuildRep:
            feature1,feature2,.........................,feature600 , id
            concat(<question-embedding> , <comment embedding> ) , Q268_R4_C1
         """
-        pass
+        with open(join_path(out_path,'test.csv'),'w',encoding='utf=8') as out:
+            out.write(','.join(z for z in self.features))
+            out.write('\n')
+            for question in question_comments.keys():
+                question_embedding  = self.GetSentenceEmbedding(question)
+                if question_embedding.__class__ != np.ndarray:
+                    question_embedding = np.zeros(300)
+                for id,comment in question_comments[question]:
+                    comment_embedding = self.GetSentenceEmbedding(comment)
+                    if comment_embedding.__class__ != np.ndarray:
+                        comment_embedding = np.zeros(300)
+                    qc_embedding = np.concatenate((question_embedding,comment_embedding))
+                    out.write(','.join(str(v) for v in qc_embedding)+','+id)
+                    out.write('\n')
+        return
+        
 
 
 
