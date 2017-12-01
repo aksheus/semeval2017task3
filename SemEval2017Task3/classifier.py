@@ -1,6 +1,6 @@
 import argparse
 from Preprocess import PreProcess
-import BuildRep
+from BuildRep import BuildRep
 import pandas as pd 
 import numpy as np 
 from sklearn import svm
@@ -32,9 +32,11 @@ if __name__ == '__main__':
 		#	print(k,' : ',question_comments[k])
 		#print(len(question_comments))
 		truth_table = preprocessor.GetTruthTable(truth_path)
-		for k in truth_table.keys():
+		"""for k in truth_table.keys():
 			print(k,' : ',truth_table[k])
-		print(len(truth_table))
+		print(len(truth_table))"""
+		builder = BuildRep()
+		builder.BuildTrainRep(question_comments,truth_table)
 
 	elif args['mode'] == 'classify':
 		pass
