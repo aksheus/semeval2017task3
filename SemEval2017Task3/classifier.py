@@ -57,10 +57,10 @@ if __name__ == '__main__':
 		"""for k in truth_table.keys():
 			print(k,' : ',truth_table[k])
 		print(len(truth_table))"""
-		builder = BuildRep()
+		builder = BuildRep(dot_product=True)
 		builder.BuildTrainRep(question_comments,truth_table)
 		#missing_train_instances = builder.missing_training_instances
-		#builder.BuildTestRep(question_comments_test)
+		builder.BuildTestRep(question_comments_test)
 		#print('##########################')
 		#print(len(missing_train_instances))
 		#print(missing_train_instances)

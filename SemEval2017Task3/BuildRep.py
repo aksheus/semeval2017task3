@@ -14,11 +14,14 @@ join_path = lambda v,w : os.path.join(v,w)
 
 class BuildRep:
     
-    def __init__(self):
+    def __init__(self,dot_product=False):
         # initialize google w2v
         # need to change later: dimensions and pre trained embeddings should be passed to constructor 
         self.embedding_model = gensim.models.KeyedVectors.load_word2vec_format('C:\\Users\\abkma\\anlp\\GoogleNews-vectors-negative300.bin', binary=True)
         self.features = [ 'dimension'+str(z+1) for z in range(600) ]
+        self.dot_product = dot_product
+        if self.dot_product:
+            self.features.append('dot')
         self.features.append('categories')
         #self.missing_training_instances = set()
         return
@@ -43,7 +46,11 @@ class BuildRep:
                     if comment_embedding.__class__ != np.ndarray:
                         continue
                     qc_embedding = np.concatenate((question_embedding,comment_embedding))
-                    out.write(','.join(str(v) for v in qc_embedding)+','+truth_table[id])
+                    if not self.dot_product:
+                        out.write(','.join(str(v) for v in qc_embedding)+','+truth_table[id])
+                    else:
+                        dp = np.dot(question_embedding,comment_embedding)
+                        out.write(','.join(str(v) for v in qc_embedding)+','+str(dp)+','+truth_table[id])
                     out.write('\n')
         return
 
@@ -85,7 +92,11 @@ class BuildRep:
                     if comment_embedding.__class__ != np.ndarray:
                         comment_embedding = np.zeros(300)
                     qc_embedding = np.concatenate((question_embedding,comment_embedding))
-                    out.write(','.join(str(v) for v in qc_embedding)+','+id)
+                    if not self.dot_product:
+                        out.write(','.join(str(v) for v in qc_embedding)+','+id)
+                    else:
+                        dp = np.dot(question_embedding,comment_embedding)
+                        out.write(','.join(str(v) for v in qc_embedding)+','+str(dp)+','+id)
                     out.write('\n')
         return
         
