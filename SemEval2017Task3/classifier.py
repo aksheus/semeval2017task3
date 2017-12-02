@@ -9,6 +9,7 @@ from sklearn.metrics import f1_score,classification_report,make_scorer
 from sklearn.ensemble import RandomForestClassifier as RFC,AdaBoostClassifier as Ada
 from sklearn.model_selection import cross_validate
 from sklearn.naive_bayes import GaussianNB as NB
+from sklearn.neighbors import KNeighborsClassifier,RadiusNeighborsClassifier
 
 """
       
@@ -78,12 +79,33 @@ if __name__ == '__main__':
 		class_weight = 'balanced',
         #random_state = 512
 		)
-		svm_rbf = svm.SVC(C=20,kernel='rbf',gamma = 'auto',class_weight = 'balanced')
-		svm_linear = svm.LinearSVC(C=1,class_weight = 'balanced')
+
+		svm_poly = svm.SVC(C=1,kernel='poly',gamma = 'auto',class_weight = 'balanced')
+		svm_rbf = svm.SVC(C=30,kernel='rbf',gamma = 'auto',class_weight = 'balanced')
+		svm_linear = svm.LinearSVC(C=5,class_weight = 'balanced')
+
 		nb = NB()
 
-		clfs = [rf,svm_rbf,svm_linear,nb]
+		knnu = KNeighborsClassifier(n_neighbors=5, 
+								   weights='uniform', 
+								   algorithm='auto', 
+								   leaf_size=30,
+								   p=2, 
+								   metric='minkowski', 
+								   metric_params=None,
+								  n_jobs=-1)
 
+		knnd = KNeighborsClassifier(n_neighbors=5, 
+								   weights='distance', 
+								   algorithm='auto', 
+								   leaf_size=30,
+                                   p=2, 
+								   metric='minkowski', 
+								   metric_params=None,
+								  n_jobs=-1)
+
+		clfs = [svm_rbf,svm_linear,nb]
+		clfs = [svm_rbf,svm_linear,knnu,knnd]
 		if args['classify'] == 'cross':
 
 			scoring = ['f1_macro','accuracy','precision_macro','recall_macro']
