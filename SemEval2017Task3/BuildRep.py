@@ -20,6 +20,7 @@ class BuildRep:
         self.embedding_model = gensim.models.KeyedVectors.load_word2vec_format('C:\\Users\\abkma\\anlp\\GoogleNews-vectors-negative300.bin', binary=True)
         self.features = [ 'dimension'+str(z+1) for z in range(600) ]
         self.features.append('categories')
+        #self.missing_training_instances = set()
         return
 
     def BuildTrainRep(self,question_comments,truth_table,out_path='.'):
@@ -38,7 +39,7 @@ class BuildRep:
                 if question_embedding.__class__ != np.ndarray:
                     continue
                 for id,comment in question_comments[question]:
-                    comment_embedding = self.GetSentenceEmbedding(comment)
+                    comment_embedding = self.GetSentenceEmbedding(comment,id)
                     if comment_embedding.__class__ != np.ndarray:
                         continue
                     qc_embedding = np.concatenate((question_embedding,comment_embedding))
@@ -46,7 +47,7 @@ class BuildRep:
                     out.write('\n')
         return
 
-    def GetSentenceEmbedding(self,text):
+    def GetSentenceEmbedding(self,text,id=None):
         words = word_tokenize(text)
         word_vectors = []
         for word in words:
@@ -61,6 +62,8 @@ class BuildRep:
             # 15 missed training instances cuz of oov :/
             # 25 test instances must output an instance as prediction is must
             print('missed instance')
+            #if id is not None:
+            #    self.missing_training_instances.add(id)
             print(text)
             return False
 

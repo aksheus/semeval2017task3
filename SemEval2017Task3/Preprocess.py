@@ -27,7 +27,7 @@ class PreProcess:
         return qc
 
 
-    def GetTruthTable(self,path):
+    def GetTruthTable(self,path,missing_ids):
         """
            From relevancy file build this table
            key : 'Q268_R4_C1' : true/false
@@ -36,5 +36,7 @@ class PreProcess:
         with open(path,errors='ignore') as inp:
             for line in inp:
                 pieces = line.rstrip().split()
-                truth_table[pieces[1]]=pieces[-1]
+                if pieces[1] not in missing_ids:
+                    truth_table[pieces[1]]=pieces[-1]
+
         return truth_table
