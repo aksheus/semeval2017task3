@@ -24,6 +24,7 @@ class BuildRep:
             self.features.append('dot')
         self.features.append('categories')
         #self.missing_training_instances = set()
+        self.false_test_instances = set()
         return
 
     def BuildTrainRep(self,question_comments,truth_table,out_path='.'):
@@ -80,17 +81,23 @@ class BuildRep:
            feature1,feature2,.........................,feature600 , id
            concat(<question-embedding> , <comment embedding> ) , Q268_R4_C1
         """
-        with open(join_path(out_path,'test.csv'),'w',encoding='utf=8') as out:
+        with open(join_path(out_path,'test_bleh.csv'),'w',encoding='utf=8') as out:
             out.write(','.join(z for z in self.features))
             out.write('\n')
             for question in question_comments.keys():
+
                 question_embedding  = self.GetSentenceEmbedding(question)
+
                 if question_embedding.__class__ != np.ndarray:
                     question_embedding = np.zeros(300)
+
                 for id,comment in question_comments[question]:
                     comment_embedding = self.GetSentenceEmbedding(comment)
+
                     if comment_embedding.__class__ != np.ndarray:
                         comment_embedding = np.zeros(300)
+                        self.false_test_instances.add(id)
+
                     qc_embedding = np.concatenate((question_embedding,comment_embedding))
                     if not self.dot_product:
                         out.write(','.join(str(v) for v in qc_embedding)+','+id)

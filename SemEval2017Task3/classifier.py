@@ -59,21 +59,25 @@ if __name__ == '__main__':
 
 	missing_train_instances = set(['Q270_R37_C3', 'Q273_R60_C7', 'Q274_R41_C5', 'Q284_R51_C9', 'Q277_R5_C5', 'Q280_R11_C7', 'Q280_R48_C1', 'Q281_R56_C3', 'Q284_R33_C5', 'Q284_R44_C4', 'Q284_R44_C5', 'Q286_R13_C9', 'Q286_R13_C9', 'Q287_R10_C6', 'Q287_R23_C2'])
 
+	false_test_ids = {'Q303_R39_C1', 'Q289_R26_C9', 'Q293_R3_C4', 'Q305_R56_C9', 'Q301_R40_C4', 'Q296_R54_C4', 'Q300_R41_C1', 'Q290_R11_C8', 'Q301_R40_C5', 'Q316_R31_C1', 'Q317_R12_C9', 'Q288_R3_C6', 'Q298_R20_C7', 'Q303_R20_C9', 'Q294_R13_C9', 'Q301_R70_C3', 'Q314_R22_C10', 'Q305_R30_C3', 'Q316_R2_C1', 'Q314_R18_C7', 'Q308_R22_C8', 'Q291_R34_C10', 'Q307_R3_C6'}
+
 	if args['mode'] == 'rep':
 		preprocessor = PreProcess()
-		question_comments = preprocessor.GetQuestionCommentDict(args['train'])
+		#question_comments = preprocessor.GetQuestionCommentDict(args['train'])
 		question_comments_test = preprocessor.GetQuestionCommentDict(args['test'])
 		#for k in question_comments.keys():
 		#	print(k,' : ',question_comments[k])
 		#print(len(question_comments))
-		truth_table = preprocessor.GetTruthTable(truth_path,missing_train_instances)
+		#truth_table = preprocessor.GetTruthTable(truth_path,missing_train_instances)
 		"""for k in truth_table.keys():
 			print(k,' : ',truth_table[k])
 		print(len(truth_table))"""
 		builder = BuildRep(dot_product=True)
-		builder.BuildTrainRep(question_comments,truth_table)
+		#builder.BuildTrainRep(question_comments,truth_table)
 		#missing_train_instances = builder.missing_training_instances
 		builder.BuildTestRep(question_comments_test)
+		false_test_ids = builder.false_test_instances
+		print(false_test_ids)
 		#print('##########################')
 		#print(len(missing_train_instances))
 		#print(missing_train_instances)
@@ -118,6 +122,7 @@ if __name__ == '__main__':
 
 		clfs = [svm_rbf,svm_linear,nb]
 		clfs = [svm_rbf,svm_linear,nb,knnu,knnd]
+
 		if args['classify'] == 'cross':
 
 			scoring = ['f1_macro','accuracy','precision_macro','recall_macro']
@@ -139,26 +144,8 @@ if __name__ == '__main__':
 			for clf in clfs:
 				clf.fit(trdf,labels)
 			#zs =[ clf.predict(tedf) for clf in clfs]
-			print('tedf length',len(tedf.values))
 			z = clfs[0].predict(tedf)
 			zlog_probs = clfs[0].predict_log_proba(tedf) 
-			print(clfs[0].classes_)
 			required_index = clfs[0].classes_.tolist().index(True)
-			print(type(zlog_probs))
-			for item in zlog_probs:
-				print(item)
-				print(type(item))
-				break
-			print('log probs length',len(zlog_probs))
-			print('number of predictions legnth',len(z))
-			print('ids length',len(ids))
 			predictions = [(id,proba[required_index],prediction) for id,proba,prediction in zip(ids,zlog_probs,z)]
-			print('#####################')
-			print('predcitions dict : ',len(predictions))
-			for k in predictions:
-				print(k)
-				break
-			"""for clf,z in zip(clfs,zs):
-				print (clf)
-				print ('{0}'.format(classification_report(y_true=truth,y_pred=z))) #target_names=['female','male']"""
 			
