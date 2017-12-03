@@ -181,4 +181,4 @@ if __name__ == '__main__':
                 required_index = clf.classes_.tolist().index(True)
                 predictions = [[id,proba[required_index],prediction] for id,proba,prediction in zip(ids,zlog_probs,z)]
                 predictions = post_process(predictions,false_test_ids)
-                write_submission(predictions,args['out']+'_'+name+'.pred')
+                write_submission(predictions,args['out']+'_'+name+'.predictions')
