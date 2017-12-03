@@ -29,14 +29,19 @@ def post_process(predictions,false_ids):
        Return modified predictions by making mandatory 
        false predictions false
 
-       predictions (Q268_R4_C2,1.49980396096993,true)
+       predictions [Q268_R4_C2,1.49980396096993,true]
 
     """
-    pass 
+    for idx in range(len(predictions)):
+        if predictions[idx][0] in false_ids:
+            predictions[idx][1] = 0.0
+            predictions[idx][2] = False
+    
+    return predictions
 
     
 
-def write_submission(ids,scores,predictions,out_path='.'):
+def write_submission(predictions,out_path='submission.pred'):
     """
        Output submission.pred 
 
@@ -44,6 +49,8 @@ def write_submission(ids,scores,predictions,out_path='.'):
               ids              scores           predictions
     """
     pass 
+
+
 
 if __name__ == '__main__':
 
@@ -122,6 +129,7 @@ if __name__ == '__main__':
 
 		clfs = [svm_rbf,svm_linear,nb]
 		clfs = [svm_rbf,svm_linear,nb,knnu,knnd]
+		clf_names = ['svm_rbf','svm_linear','nb','knnu','knnd']
 
 		if args['classify'] == 'cross':
 
@@ -141,11 +149,11 @@ if __name__ == '__main__':
 			#clf.fit(trdf,labels)
 			# get probabilities for predcitions
 			# output false for oov indexes viz test instances which are all zeros
-			for clf in clfs:
+			for clf,name in zip(clfs,clf_names):
 				clf.fit(trdf,labels)
-			#zs =[ clf.predict(tedf) for clf in clfs]
-			z = clfs[0].predict(tedf)
-			zlog_probs = clfs[0].predict_log_proba(tedf) 
-			required_index = clfs[0].classes_.tolist().index(True)
-			predictions = [(id,proba[required_index],prediction) for id,proba,prediction in zip(ids,zlog_probs,z)]
-			
+				#zs =[ clf.predict(tedf) for clf in clfs]
+				z = clf.predict(tedf)
+				zlog_probs = clf.predict_proba(tedf) 
+				required_index = clf.classes_.tolist().index(True)
+				predictions = [[id,proba[required_index],prediction] for id,proba,prediction in zip(ids,zlog_probs,z)]
+				write_submission(predictions,'submission_'+name+'.pred')
