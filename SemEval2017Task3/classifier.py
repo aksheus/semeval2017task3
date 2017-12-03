@@ -24,6 +24,18 @@ def get_data_frame(csv_file):
 	df = df.drop(labels=df.columns[-1],axis=1)
 	return df,labels
 
+def post_process(predictions,false_ids):
+    """
+       Return modified predictions by making mandatory 
+       false predictions false
+
+       predictions [ Q268_R4_C2 ] = (1.49980396096993,true)
+
+    """
+    pass 
+
+    
+
 def write_submission(ids,scores,predictions,out_path='.'):
     """
        Output submission.pred 
@@ -126,9 +138,18 @@ if __name__ == '__main__':
 			# output false for oov indexes viz test instances which are all zeros
 			for clf in clfs:
 				clf.fit(trdf,labels)
-			zs =[ clf.predict(tedf) for clf in clfs]
-			zprobs = []
+			#zs =[ clf.predict(tedf) for clf in clfs]
+			z = clfs[0].predict(tedf)
+			zlog_probs = clfs[0].predict_log_proba(tedf) 
+			print(clfs[0].classes_)
+			print(type(zlog_probs))
+			for item in zlog_probs:
+				print(item)
+				print(type(item))
+				break
+			print(len(zlog_probs))
+
 			"""for clf,z in zip(clfs,zs):
 				print (clf)
 				print ('{0}'.format(classification_report(y_true=truth,y_pred=z))) #target_names=['female','male']"""
-
+			
