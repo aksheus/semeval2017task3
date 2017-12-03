@@ -60,17 +60,20 @@ def write_submission(predictions,out_path='submission.pred'):
     with open(out_path,'w',encoding='utf-8') as out:
 
          for Id,score,pred in predictions:
+            
+            columns = []
 
             split_id = Id.split('_')
 
             relabel = 'true' if pred else 'false'
 
-            out.write(split_id[0]+'\t'
-                    + Id + '\t',
-                    + (split_id[1][-1]+digit_map[split_id[2][-1]] ) + '\t'
-                    + str(score) + '\t'
-                    + relabel
-            )
+            columns.append(split_id[0])
+            columns.append(Id)
+            columns.append(split_id[1][1:]+digit_map[split_id[2][-1]])
+            columns.append(str(score))
+            columns.append(relabel)
+
+            out.write('\t'.join(col for col in columns))
             out.write('\n')
     return
 

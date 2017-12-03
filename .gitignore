@@ -259,3 +259,5 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/SemEval2017Task3/sb
+/SemEval2017Task3/sb
