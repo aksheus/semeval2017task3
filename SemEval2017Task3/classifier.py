@@ -81,8 +81,8 @@ if __name__ == '__main__':
 		)
 
 		svm_poly = svm.SVC(C=1,kernel='poly',gamma = 'auto',class_weight = 'balanced')
-		svm_rbf = svm.SVC(C=30,kernel='rbf',gamma = 'auto',class_weight = 'balanced')
-		svm_linear = svm.LinearSVC(C=5,class_weight = 'balanced')
+		svm_rbf = svm.SVC(C=25,kernel='rbf',gamma = 'auto',class_weight = 'balanced',probability=True)
+		svm_linear =svm.SVC(C=5,kernel='linear',gamma = 'auto',class_weight = 'balanced',probability=True) #svm.LinearSVC(C=5,class_weight = 'balanced')
 
 		nb = NB()
 
@@ -105,7 +105,7 @@ if __name__ == '__main__':
 								  n_jobs=-1)
 
 		clfs = [svm_rbf,svm_linear,nb]
-		clfs = [svm_rbf,svm_linear,knnu,knnd]
+		clfs = [svm_rbf,svm_linear,nb,knnu,knnd]
 		if args['classify'] == 'cross':
 
 			scoring = ['f1_macro','accuracy','precision_macro','recall_macro']
@@ -127,6 +127,7 @@ if __name__ == '__main__':
 			for clf in clfs:
 				clf.fit(trdf,labels)
 			zs =[ clf.predict(tedf) for clf in clfs]
+			zprobs = []
 			"""for clf,z in zip(clfs,zs):
 				print (clf)
 				print ('{0}'.format(classification_report(y_true=truth,y_pred=z))) #target_names=['female','male']"""
