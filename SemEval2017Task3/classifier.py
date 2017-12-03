@@ -29,7 +29,7 @@ def post_process(predictions,false_ids):
        Return modified predictions by making mandatory 
        false predictions false
 
-       predictions [ Q268_R4_C2 ] = (1.49980396096993,true)
+       predictions (Q268_R4_C2,1.49980396096993,true)
 
     """
     pass 
@@ -139,16 +139,25 @@ if __name__ == '__main__':
 			for clf in clfs:
 				clf.fit(trdf,labels)
 			#zs =[ clf.predict(tedf) for clf in clfs]
+			print('tedf length',len(tedf.values))
 			z = clfs[0].predict(tedf)
 			zlog_probs = clfs[0].predict_log_proba(tedf) 
 			print(clfs[0].classes_)
+			required_index = clfs[0].classes_.tolist().index(True)
 			print(type(zlog_probs))
 			for item in zlog_probs:
 				print(item)
 				print(type(item))
 				break
-			print(len(zlog_probs))
-
+			print('log probs length',len(zlog_probs))
+			print('number of predictions legnth',len(z))
+			print('ids length',len(ids))
+			predictions = [(id,proba[required_index],prediction) for id,proba,prediction in zip(ids,zlog_probs,z)]
+			print('#####################')
+			print('predcitions dict : ',len(predictions))
+			for k in predictions:
+				print(k)
+				break
 			"""for clf,z in zip(clfs,zs):
 				print (clf)
 				print ('{0}'.format(classification_report(y_true=truth,y_pred=z))) #target_names=['female','male']"""
