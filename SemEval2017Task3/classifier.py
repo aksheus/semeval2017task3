@@ -107,8 +107,8 @@ if __name__ == '__main__':
         #builder.BuildTrainRep(question_comments,truth_table)
         #missing_train_instances = builder.missing_training_instances
         builder.BuildTestRep(question_comments_test)
-        false_test_ids = builder.false_test_instances
-        print(false_test_ids)
+        #false_test_ids = builder.false_test_instances
+        #print(false_test_ids)
         #print('##########################')
         #print(len(missing_train_instances))
         #print(missing_train_instances)

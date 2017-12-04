@@ -12,7 +12,7 @@ class PreProcess:
 
     def GetQuestionCommentDict(self,path):
         """  return dict of this format
-             key : 'question text' : [ ('Q268_R4_C1' , 'comment text') , ....]
+             key : (Q268_R4,'question text') : [ ('Q268_R4_C1' , 'comment text') , ....]
         """
         qc = {}
         soup = None
@@ -23,7 +23,7 @@ class PreProcess:
         for question in questions:
             relevant_comments = [ (z['RELC_ID'],z.text.rstrip().strip('\n')) for z in comments 
                                  if question['RELQ_ID'] in z['RELC_ID']]
-            qc[question.text.rstrip().strip('\n')] = relevant_comments
+            qc[(question['RELQ_ID'],question.text.rstrip().strip('\n'))] = relevant_comments
         return qc
 
 

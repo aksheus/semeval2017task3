@@ -33,13 +33,13 @@ class BuildRep:
             feature1,feature2,.........................,feature600 , label , id
             concat(<question-embedding> , <comment embedding> ),label , Q268_R4_C1 
 
-            format of input, key : 'question text' : [ ('Q268_R4_C1' , 'comment text') , ....]
+            format of input, key : (Q268_R4,'question text') : [ ('Q268_R4_C1' , 'comment text') , ....]
         """
         with open(join_path(out_path,'train.csv'),'w',encoding='utf=8') as out:
             out.write(','.join(z for z in self.features))
             out.write('\n')
             for question in question_comments.keys():
-                question_embedding  = self.GetSentenceEmbedding(question)
+                question_embedding  = self.GetSentenceEmbedding(question[-1])
                 if question_embedding.__class__ != np.ndarray:
                     continue
                 for id,comment in question_comments[question]:
@@ -81,12 +81,12 @@ class BuildRep:
            feature1,feature2,.........................,feature600 , id
            concat(<question-embedding> , <comment embedding> ) , Q268_R4_C1
         """
-        with open(join_path(out_path,'test_bleh.csv'),'w',encoding='utf=8') as out:
+        with open(join_path(out_path,'test.csv'),'w',encoding='utf=8') as out:
             out.write(','.join(z for z in self.features))
             out.write('\n')
             for question in question_comments.keys():
 
-                question_embedding  = self.GetSentenceEmbedding(question)
+                question_embedding  = self.GetSentenceEmbedding(question[-1])
 
                 if question_embedding.__class__ != np.ndarray:
                     question_embedding = np.zeros(300)

@@ -31,8 +31,16 @@ if __name__ == '__main__':
         with open(sys.argv[1]) as inp:
             for line in inp:
                 content.append(line)
-        content = [ tuple(z.split()) for z in content]
-        proper_content = order_predictions(content)
+        seen = set()
+        #content = [ tuple(z.split()) for z in content]
+        pruned_content = []
+        for z in content:
+            to_add = tuple(z.split())
+            if to_add[1] not in seen:
+                pruned_content.append(to_add)
+            seen.add(to_add[1])
+
+        proper_content = order_predictions(pruned_content)
         with open(sys.argv[2],'w',encoding='utf-8') as out:
             for column in proper_content:
                 out.write('\t'.join(col for col in column))
