@@ -26,6 +26,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="classifier.py" />
+    <Compile Include="OrderPredictions.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Preprocess.py">
       <SubType>Code</SubType>
     </Compile>
