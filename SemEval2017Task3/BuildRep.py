@@ -27,7 +27,7 @@ class BuildRep:
         self.false_test_instances = set()
         return
 
-    def BuildTrainRep(self,question_comments,truth_table,out_path='.'):
+    def BuildTrainRep(self,question_comments,truth_table,oversample=False,ovsize=5,out_path='.'):
         """
             Build and output train csv file with concatenated embeddings
             feature1,feature2,.........................,feature600 , label , id
@@ -74,6 +74,17 @@ class BuildRep:
             #    self.missing_training_instances.add(id)
             print(text)
             return False
+
+    def GetOverSampledText(self,text,ovsize):
+        words = word_tokenize(text)
+        candidates = np.zeros((ovsize,ovsize),dtype=str)
+        for x in range(len(words)):
+            candidates[x] =np.asarray( [ w[0] for w in self.embedding_model.similar_by_word(words[x],topn=ovsize)])
+        ovtext = []
+        for row in candidates.T:
+            ovtext.append(' '.join(s for s in row))
+        return ovtext
+
 
     def BuildTestRep(self,question_comments,out_path='.'):
         """
