@@ -94,19 +94,19 @@ if __name__ == '__main__':
 
     if args['mode'] == 'rep':
         preprocessor = PreProcess()
-        #question_comments = preprocessor.GetQuestionCommentDict(args['train'])
-        question_comments_test = preprocessor.GetQuestionCommentDict(args['test'])
+        question_comments = preprocessor.GetQuestionCommentDict(args['train'])
+        #question_comments_test = preprocessor.GetQuestionCommentDict(args['test'])
         #for k in question_comments.keys():
         #   print(k,' : ',question_comments[k])
         #print(len(question_comments))
-        #truth_table = preprocessor.GetTruthTable(truth_path,missing_train_instances)
+        truth_table = preprocessor.GetTruthTable(truth_path,missing_train_instances)
         """for k in truth_table.keys():
             print(k,' : ',truth_table[k])
         print(len(truth_table))"""
         builder = BuildRep(dot_product=True)
-        #builder.BuildTrainRep(question_comments,truth_table)
+        builder.BuildTrainRep(question_comments,truth_table,oversample=True)
         #missing_train_instances = builder.missing_training_instances
-        builder.BuildTestRep(question_comments_test)
+        #builder.BuildTestRep(question_comments_test)
         #false_test_ids = builder.false_test_instances
         #print(false_test_ids)
         #print('##########################')
